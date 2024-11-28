@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Основные стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Общий стиль для body */
+        body {
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Шапка сайта */
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px 0;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        header .nav ul {
+            list-style: none;
+            display: flex;
+        }
+
+        header .nav ul li {
+            margin-right: 20px;
+        }
+
+        header .nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        header .nav ul li a:hover {
+            color: #ff7f50;
+        }
+
+        /* Раздел профиля */
+        .profile {
+            background-color: #fff;
+            padding: 40px 20px;
+        }
+
+        .profile .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .profile h2 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        #orderDetails {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: #555;
+        }
+
+        #orderDetails p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        #orderDetails p strong {
+            color: #333;
+        }
+
+        /* Кнопка удаления */
+        .delete-button {
+            background-color: #ff4c4c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .delete-button:hover {
+            background-color: #ff0000;
+        }
+
+        /* Футер */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 14px;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        #orderDetails {
+            animation: fadeIn 1s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Cakeby.arev</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="prem.html">Преимущества</a></li>
+                    <li><a href="menu.html">Меню</a></li>
+                    <li><a href="about.html">О нас</a></li>
+                    <li><a href="services.html">Услуги</a></li>
+                    <li><a href="contact.html">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Раздел профиля -->
+    <section id="profile" class="profile">
+        <div class="container">
+            <h2>Данные вашего заказа</h2>
+            
+            <div id="orderDetails">
+                <!-- Данные заказа будут отображаться здесь -->
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Cakeby.arev. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Извлекаем данные заказа из localStorage
+        window.onload = function() {
+            var orderDetails = JSON.parse(localStorage.getItem('orders')) || [];
+
+            var orderDetailsDiv = document.getElementById('orderDetails');
+            if (orderDetails.length > 0) {
+                orderDetailsDiv.innerHTML = '';
+                orderDetails.forEach(function(order, index) {
+                    orderDetailsDiv.innerHTML += `
+                        <p><strong>Заказ #${index + 1}</strong></p>
+                        <p><strong>Имя:</strong> ${order.name}</p>
+                        <p><strong>Телефон:</strong> ${order.phone}</p>
+                        <p><strong>Файл:</strong> <img src="${order.file}" alt="File" style="max-width: 100px;"></p>
+                        <button class="delete-button" onclick="deleteOrder(${index})">Удалить</button>
+                        <hr>
+                    `;
+                });
+            } else {
+                orderDetailsDiv.innerHTML = '<p>Нет данных заказа.</p>';
+            }
+        };
+
+        // Сохранение данных в localStorage
+        function saveOrder(name, phone, file) {
+            var order = {
+                name: name,
+                phone: phone,
+                file: file
+            };
+
+            var orders = JSON.parse(localStorage.getItem('orders')) || [];
+            orders.push(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+        }
+
+        // Удаление заказа
+        function deleteOrder(index) {
+            var orders = JSON.parse(localStorage.getItem('orders')) || [];
+            orders.splice(index, 1); // Удаляем заказ по индексу
+            localStorage.setItem('orders', JSON.stringify(orders));
+            window.location.reload(); // Перезагружаем страницу, чтобы обновить список заказов
+        }
+
+        // Обработчик формы
+        document.getElementById('orderForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var name = document.getElementById('name').value;
+            var phone = document.getElementById('phone').value;
+            var fileInput = document.getElementById('file');
+            var file = fileInput.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    // Сохранение файла в формате Base64
+                    var fileData = e.target.result;
+                    saveOrder(name, phone, fileData);
+
+                    alert('Заказ отправлен! Мы с вами свяжемся.');
+                    window.location.reload();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                saveOrder(name, phone, "");
+                alert('Заказ отправлен без файла! Мы с вами свяжемся.');
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+</html>
